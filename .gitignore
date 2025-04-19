@@ -1,0 +1,55 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build / Dist
+dist/
+build/
+
+# dotenv
+.env
+.env.* 
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDEs / Editors
+.vscode/
+.idea/
+
+# Coverage / Testing
+coverage/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+
+# PM2 logs
+pids/
+*.pid
+*.seed
+
+# Debug
+debug.log
+
+# Docker (si aplica)
+docker-compose.override.yml
+.docker/
+
+# ESLint / Prettier caches
+.eslintcache
+.prettiercache
+
+# Sequelize specific (si usás archivos temporales o DB local para testing)
+*.sqlite
+*.sqlite3
+*.db
+
+
