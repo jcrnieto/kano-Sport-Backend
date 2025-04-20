@@ -6,7 +6,7 @@ interface StudentAttributes {
   dni: string;
   nombre: string;
   apellido: string;
-  fecha_nacimiento?: Date;
+  fecha_nacimiento?: Date | null;
 }
 
 type StudentCreationAttributes = Optional<StudentAttributes, 'id'>;
@@ -17,7 +17,7 @@ class Student extends Model<StudentAttributes, StudentCreationAttributes>
   public dni!: string;
   public nombre!: string;
   public apellido!: string;
-  public fecha_nacimiento?: Date;
+  public fecha_nacimiento?: Date | null;
 }
 
 Student.init({
