@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import student from './student.route';
-
 
 const router = Router();
 
-router.use('/student', student);
+router.get('/getAllStudent', (req, res)=>{
+    res.send('estoy en student');
+});
 
 export default router;
