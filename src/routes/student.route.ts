@@ -1,9 +1,15 @@
 import { Router } from 'express';
-import studentController from '../controllers/student.controller'
+import {
+    getStudentByDniController,
+    allStudentController,
+    createStudentController
+  } from '../controllers/student.controller';
+import authMiddleware from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.get('/getAllStudent', studentController.allCarsController);
-router.post('/createStudent', studentController.createCarsController);
+router.get('/getAllStudent', authMiddleware, allStudentController);
+router.post('/createStudent', authMiddleware, createStudentController);
+router.get('/dni', getStudentByDniController);
 
 export default router;
