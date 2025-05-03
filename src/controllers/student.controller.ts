@@ -29,23 +29,46 @@ export const createStudentController = async (req: Request, res: Response): Prom
 };
 
 
-export const getStudentByDniController = async ( req: Request, res: Response): Promise<any> => {
+export const getStudentByDniController = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const dni = req.query.dni;
+
+    if (typeof dni !== 'string' || dni.trim() === '') {
+      return res.status(400).json({ error: 'DNI no proporcionado o inválido' });
+    }
+
+    const student = await studentAdapter.byDniStudentAdapter(dni.trim());
+    return res.status(200).json(student);
+
+  } catch (error: any) {
+    return res.status(error.status || 500).json({
+      error: 'Error al buscar estudiante por DNI',
+      details: error.message,
+    });
+  }
+};
+
+export const getStudentByIdController = async ( req: Request, res: Response): Promise<any> => {
     try {
-      const dni = req.query.dni as string;
-  
-      if (!dni) {
-        return res.status(400).json({ error: 'DNI no proporcionado' });
+      const id = parseInt(req.query.id as string, 10);
+
+      if (isNaN(id)) {
+        return res.status(400).json({ error: 'id inválido' });
+      }
+    
+      if (!id) {
+        return res.status(400).json({ error: 'id no proporcionado' });
       }
   
-      const student = await studentAdapter.byDniStudentAdapter(dni);
+      const student = await studentAdapter.byIdStudentAdapter(id);
       return res.status(200).json(student);
     } catch (error: any) {
       return res.status(error.status || 500).json({
-        error: 'Error al buscar estudiante por DNI',
+        error: 'Error al buscar estudiante por id',
         details: error.message,
       });
     }
-  };
+};
 
 
 

@@ -4,10 +4,10 @@ import Student from './Student';
 
 interface QuotaAttributes {
   id: number;
-  alumno_id: number;
-  fechaPago: Date;
-  fechaVencimiento: Date;
-  monto: number;
+  student_id: number;
+  paymentDate: Date;
+  expirationDate: Date;
+  amount: number;
 }
 
 type QuotaCreationAttributes = Optional<QuotaAttributes, 'id'>;
@@ -15,26 +15,26 @@ type QuotaCreationAttributes = Optional<QuotaAttributes, 'id'>;
 class Quota extends Model<QuotaAttributes, QuotaCreationAttributes>
   implements QuotaAttributes {
   public id!: number;
-  public alumno_id!: number;
-  public fechaPago!: Date;
-  public fechaVencimiento!: Date;
-  public monto!: number;
+  public student_id!: number;
+  public paymentDate!: Date;
+  public expirationDate!: Date;
+  public amount!: number;
 }
 
 Quota.init({
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  alumno_id: { type: DataTypes.INTEGER, allowNull: false },
-  fechaPago: { type: DataTypes.DATEONLY, allowNull: false },
-  fechaVencimiento: { type: DataTypes.DATEONLY, allowNull: false },
-  monto: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
+  student_id: { type: DataTypes.INTEGER, allowNull: false },
+  paymentDate: { type: DataTypes.DATEONLY, allowNull: false },
+  expirationDate: { type: DataTypes.DATEONLY, allowNull: false },
+  amount: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
 }, {
   sequelize,
   tableName: 'cuotas',
   timestamps: false,
 });
 
-Student.hasMany(Quota, { foreignKey: 'alumno_id' });
-Quota.belongsTo(Student, { foreignKey: 'alumno_id' });
+Student.hasMany(Quota, { foreignKey: 'student_id' });
+Quota.belongsTo(Student, { foreignKey: 'student_id' });
 
 export default Quota;
 

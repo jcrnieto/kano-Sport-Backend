@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ZodError } from 'zod';
 
 import Student from '../models/Student';
+import Quota from '../models/Quota';
 
 const allStudentAdapter = async (): Promise<any> => {
     try {
@@ -94,8 +95,16 @@ try {
 
 const byDniStudentAdapter = async (dni: string): Promise<any> => {
     try {
-      const student = await Student.findOne({ where: { dni } });
-  
+      const student = await Student.findOne({
+        where: { dni },
+        include: [
+          {
+            model: Quota,
+            attributes: ['id', 'paymentDate', 'expirationDate', 'amount'],
+          },
+        ],
+      });
+      
       if (!student) {
         throw {
           message: `No se encontró un estudiante con el DNI ${dni}`,
@@ -115,10 +124,42 @@ const byDniStudentAdapter = async (dni: string): Promise<any> => {
       };
     }
 };
+
+const byIdStudentAdapter = async (id: number): Promise<any> => {
+  try {
+    const student = await Student.findByPk(id, {
+      include: [
+        {
+          model: Quota,
+          attributes: ['id', 'paymentDate', 'expirationDate', 'amount'],
+        },
+      ],
+    });
+
+    if (!student) {
+      throw {
+        message: `No se encontró un estudiante con el id ${id}`,
+        status: 404
+      };
+    }
+
+    return {
+      message: 'Estudiante encontrado',
+      data: student,
+    };
+    
+  } catch (err: any) {
+    throw {
+      message: err?.message || 'Error desconocido en byIdStudentAdapter',
+      status: err?.status || 500
+    };
+  }
+};
   
   
 export default {
     allStudentAdapter,
     createStudentAdapter,
-    byDniStudentAdapter
+    byDniStudentAdapter,
+    byIdStudentAdapter
 };

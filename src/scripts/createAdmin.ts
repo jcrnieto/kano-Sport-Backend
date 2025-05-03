@@ -8,10 +8,13 @@ import sequelize from '../config/database';
 
     const passwordHash = await bcrypt.hash('admin123', 10);
 
-    await Admin.create({
-      username: 'admin',
-      password: passwordHash,
+    await Admin.findOrCreate({
+      where: { username: 'admin' },
+      defaults: {
+        password: passwordHash,
+      },
     });
+    
 
     console.log('✅ Admin creado correctamente');
     process.exit(0);

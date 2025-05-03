@@ -1,17 +1,17 @@
 import Quota from '../models/Quota';
 
 interface CreateQuotaDTO {
-    alumno_id: number;
-    fechaPago: string; 
-    fechaVencimiento: string; 
-    monto: number;
+  student_id: number;
+  paymentDate: string; 
+  expirationDate: string; 
+  amount: number;
 }
 
 export const createQuotaAdapter = async (data: CreateQuotaDTO): Promise<any> => {
     try {
-        const { alumno_id, fechaPago, fechaVencimiento, monto } = data;
+        const { student_id, paymentDate, expirationDate, amount } = data;
 
-    if (!alumno_id || !fechaPago || !fechaVencimiento || !monto) {
+    if (!student_id || !paymentDate || !expirationDate || !amount) {
       throw {
         status: 400,
         message: 'Faltan datos obligatorios para crear la cuota',
@@ -19,10 +19,10 @@ export const createQuotaAdapter = async (data: CreateQuotaDTO): Promise<any> => 
     }
 
     const newQuota = await Quota.create({
-      alumno_id,
-      fechaPago: new Date(fechaPago),
-      fechaVencimiento: new Date(fechaVencimiento),
-      monto
+      student_id,
+      paymentDate: new Date(paymentDate),
+      expirationDate: new Date(expirationDate),
+      amount
     });
 
     return {
