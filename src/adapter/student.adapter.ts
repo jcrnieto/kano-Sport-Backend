@@ -36,16 +36,15 @@ type CreateStudentPayload = z.infer<typeof CreateStudentSchema>;
 
 const createStudentAdapter = async (data: unknown): Promise<any> => {
 try {
-    // Validamos el input
+    
     const parsedData = CreateStudentSchema.parse(data);
 
-    // Verificar si el DNI ya existe
     const existingStudent = await Student.findOne({ where: { dni: parsedData.dni } });
     if (existingStudent) {
       throw {
-        custom: true,  // agregamos una marca propia
+        custom: true, 
         message: 'Ya existe un estudiante con este DNI',
-        status: 409,   // 409 Conflict
+        status: 409,   
       };
     }
 
@@ -155,11 +154,103 @@ const byIdStudentAdapter = async (id: number): Promise<any> => {
     };
   }
 };
+
+const deleteByIdStudentAdapter = async (deleteId: number): Promise<any> => {
+  try {
+    
+    const student = await Student.findByPk(deleteId);
+
+    if (!student) {
+      throw {
+        message: `No se encontró un estudiante con el ID ${deleteId}`,
+        status: 404
+      };
+    }
+
+    await student.destroy();
+
+    return {
+      message: 'Estudiante eliminado exitosamente',
+      data: student, 
+    };
+    
+  } catch (err: any) {
+    throw {
+      message: err?.message || 'Error desconocido en deleteByIdStudentAdapter',
+      status: err?.status || 500
+    };
+  }
+};
+
+export const UpdateStudentSchema = z.object({
+  id: z.number({
+    required_error: 'El id es obligatorio',
+    invalid_type_error: 'El id debe ser un número',
+  }),
+  dni: z.string().optional(),
+  name: z.string().optional(),
+  lastName: z.string().optional(),
+  dateOfBirth: z.coerce.date().optional(),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+});
+
+const modificationStudentAdapter = async (data: unknown): Promise<any> => {
+  try {
+    const parsed = UpdateStudentSchema.parse(data);
+    const { id, dni, name, lastName, dateOfBirth, phone, address } = parsed;
+
+    const student = await Student.findByPk(id);
+    if (!student) {
+      throw { message: `No existe un estudiante con id ${id}`, status: 404 };
+    }
+
+    // 3. Actualizar solo los campos recibidos
+    const updates: Partial<typeof parsed> = {};
+    if (dni !== undefined)      updates.dni = dni;
+    if (name !== undefined)     updates.name = name;
+    if (lastName !== undefined) updates.lastName = lastName;
+    if (dateOfBirth !== undefined) updates.dateOfBirth = new Date(dateOfBirth);
+    if (phone !== undefined)    updates.phone = phone;
+    if (address !== undefined)  updates.address = address;
+
+    await student.update(updates);
+
+    return {
+      message: 'Estudiante modificado correctamente',
+      data: student,
+    };
+    } catch (err: any) {
+      if (err instanceof ZodError) {
+        // errores de validación
+        throw {
+          error: 'Datos inválidos',
+          details: err.errors,
+          status: 400,
+        };
+      } else if (err.status && err.message) {
+        // errores personalizados (404, duplicados, etc)
+        throw {
+          error: err.message,
+          status: err.status,
+        };
+      } else {
+        console.error('Error inesperado en modificationStudentAdapter:', err);
+        throw {
+          error: 'Error interno al modificar estudiante',
+          status: 500,
+        };
+      }
+    }  
+};
+  
   
   
 export default {
     allStudentAdapter,
     createStudentAdapter,
     byDniStudentAdapter,
-    byIdStudentAdapter
+    byIdStudentAdapter,
+    deleteByIdStudentAdapter,
+    modificationStudentAdapter
 };

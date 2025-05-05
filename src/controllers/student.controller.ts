@@ -71,6 +71,42 @@ export const getStudentByIdController = async ( req: Request, res: Response): Pr
 };
 
 
+export const deleteStudentByIdController = async ( req: Request, res: Response): Promise<any> => {
+  try {
+    const deleteId = parseInt(req.query.deleteId as string, 10);
+
+    if (isNaN(deleteId)) {
+      return res.status(400).json({ error: 'id inválido' });
+    }
+  
+    if (!deleteId) {
+      return res.status(400).json({ error: 'id no proporcionado' });
+    }
+
+    const student = await studentAdapter.deleteByIdStudentAdapter(deleteId);
+    return res.status(200).json(student);
+  } catch (error: any) {
+    return res.status(error.status || 500).json({
+      error: 'Error al eliminar estudiante por id',
+      details: error.message,
+    });
+  }
+};
+
+export const modificationStudentByIdController = async ( req: Request, res: Response): Promise<any> => {
+  try {
+    const payload = { id: parseInt(req.params.id, 10), ...req.body };
+    const result = await studentAdapter.modificationStudentAdapter(payload);
+    res.status(200).json(result); 
+  } catch (error: any) {
+    return res.status(error.status || 500).json({
+      error: 'Error al modificar estudiante por id',
+      details: error.message,
+    });
+  }
+};
+
+
 
 
   
