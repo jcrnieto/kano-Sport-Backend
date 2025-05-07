@@ -35,3 +35,5 @@ const sequelize = connectionString
         logging: false,
       }
     )
+
+export default sequelize;
