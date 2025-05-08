@@ -130,7 +130,7 @@ const byIdStudentAdapter = async (id: number): Promise<any> => {
       include: [
         {
           model: Quota,
-          attributes: ['id', 'paymentDate', 'expirationDate', 'amount'],
+          attributes: ['id', 'paymentDate', 'expirationDate', 'amount', 'plan'],
         },
       ],
     });

@@ -29,7 +29,6 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "ts-node src/server.ts",
-    "create-admin": "ts-node src/scripts/createAdmin.ts"
+    "start": "ts-node src/server.ts"
   }
 }

@@ -1,25 +1,27 @@
 import bcrypt from 'bcrypt';
 import Admin from '../models/admin';
-import sequelize from '../config/database';
+import dotenv from 'dotenv';
 
-(async () => {
-  try {
-    await sequelize.sync();
+dotenv.config();
 
-    const passwordHash = await bcrypt.hash('admin123', 10);
+export const ensureAdminExists = async () => {
+  const username = process.env.USERNAME;
+  const password = process.env.PASSWORD;
 
-    await Admin.findOrCreate({
-      where: { username: 'admin' },
-      defaults: {
-        password: passwordHash,
-      },
-    });
-    
-
-    console.log('✅ Admin creado correctamente');
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Error al crear el admin:', error);
-    process.exit(1);
+  if (!username || !password) {
+    throw new Error('❌ USERNAME o PASSWORD no están definidos en las variables de entorno');
   }
-})();
+
+  const [admin, created] = await Admin.findOrCreate({
+    where: { username },
+    defaults: {
+      password: await bcrypt.hash(password, 10),
+    },
+  });
+
+  if (created) {
+    console.log('✅ Admin creado automáticamente');
+  } else {
+    console.log('ℹ️ El admin ya existe');
+  }
+};

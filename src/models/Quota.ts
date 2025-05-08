@@ -8,6 +8,7 @@ interface QuotaAttributes {
   paymentDate: Date;
   expirationDate: Date;
   amount: number;
+  plan: string;
 }
 
 type QuotaCreationAttributes = Optional<QuotaAttributes, 'id'>;
@@ -19,6 +20,7 @@ class Quota extends Model<QuotaAttributes, QuotaCreationAttributes>
   public paymentDate!: Date;
   public expirationDate!: Date;
   public amount!: number;
+  public plan!: string
 }
 
 Quota.init({
@@ -27,6 +29,7 @@ Quota.init({
   paymentDate: { type: DataTypes.DATEONLY, allowNull: false },
   expirationDate: { type: DataTypes.DATEONLY, allowNull: false },
   amount: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
+  plan: { type: DataTypes.STRING, allowNull: false },
 }, {
   sequelize,
   tableName: 'cuotas',
