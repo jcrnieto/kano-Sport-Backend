@@ -12,7 +12,7 @@ export const createQuotaAdapter = async (data: CreateQuotaDTO): Promise<any> => 
     try {
         const { student_id, paymentDate, expirationDate, amount, plan } = data;
 
-    if (!student_id || !paymentDate || !expirationDate || !amount || plan) {
+    if (!student_id || !paymentDate || !expirationDate || !amount || !plan) {
       throw {
         status: 400,
         message: 'Faltan datos obligatorios para crear la cuota',
