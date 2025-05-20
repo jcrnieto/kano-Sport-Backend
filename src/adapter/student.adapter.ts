@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { ZodError } from 'zod';
 
+import { Op } from 'sequelize';
+
 import Student from '../models/Student';
 import Quota from '../models/Quota';
 
@@ -243,7 +245,42 @@ const modificationStudentAdapter = async (data: unknown): Promise<any> => {
       }
     }  
 };
-  
+
+const byNameStudentAdapter = async (name: string): Promise<any> => {
+  try {
+    const student = await Student.findAll({
+      where: {
+        name: {
+          [Op.iLike]: `%${name}%`, 
+        }
+      },
+      include: [
+        {
+          model: Quota,
+          attributes: ['id', 'paymentDate', 'expirationDate', 'amount', 'plan'],
+        },
+      ],
+    });
+
+    if (!student) {
+      throw {
+        message: `No se encontró un estudiante con el nombre "${name}"`,
+        status: 404
+      };
+    }
+
+    return {
+      message: 'Estudiante encontrado',
+      data: student,
+    };
+
+  } catch (err: any) {
+    throw {
+      message: err?.message || 'Error desconocido en byNameStudentAdapter',
+      status: err?.status || 500
+    };
+  }
+};
   
   
 export default {
@@ -252,5 +289,6 @@ export default {
     byDniStudentAdapter,
     byIdStudentAdapter,
     deleteByIdStudentAdapter,
-    modificationStudentAdapter
+    modificationStudentAdapter,
+    byNameStudentAdapter
 };

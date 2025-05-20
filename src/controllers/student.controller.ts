@@ -107,6 +107,22 @@ export const modificationStudentByIdController = async ( req: Request, res: Resp
 };
 
 
+export const getStudentByNameController = async ( req: Request, res: Response): Promise<any> => {
+    try {
+      const name = req.query.name as string;
 
+      if (!name) {
+        return res.status(400).json({ error: 'name no proporcionado' });
+      }
+  
+      const student = await studentAdapter.byNameStudentAdapter(name);
+      return res.status(200).json(student);
+    } catch (error: any) {
+      return res.status(error.status || 500).json({
+        error: 'Error al buscar estudiante por nombre',
+        details: error.message,
+      });
+    }
+};
 
   

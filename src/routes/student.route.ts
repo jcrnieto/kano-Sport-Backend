@@ -5,7 +5,8 @@ import {
     createStudentController,
     getStudentByIdController,
     deleteStudentByIdController,
-    modificationStudentByIdController
+    modificationStudentByIdController,
+    getStudentByNameController
   } from '../controllers/student.controller';
 import authMiddleware from '../middleware/authMiddleware';
 
@@ -17,5 +18,6 @@ router.get('/dni', getStudentByDniController);
 router.get('/id',authMiddleware, getStudentByIdController);
 router.delete('/deleteId', authMiddleware, deleteStudentByIdController);
 router.patch('/:id', authMiddleware, modificationStudentByIdController);
+router.get('/name', authMiddleware, getStudentByNameController)
 
 export default router;
